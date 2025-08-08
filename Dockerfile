@@ -1,34 +1,20 @@
-# ------------ STAGE 1: Install dependencies ------------
+# Use official Node.js LTS image
+FROM node:18
 
-FROM node:20 as builder
-
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Copy package files
+# Copy package.json and package-lock.json first (for caching dependencies)
 COPY package*.json ./
 
-# Install all dependencies (including devDependencies)
+# Install dependencies
 RUN npm install
 
-# Copy app source code
+# Copy the rest of the application code
 COPY . .
 
-# ------------ STAGE 2: Create final runtime image ------------
-
-FROM node:20-slim as production
-
-# Set working directory
-WORKDIR /app
-
-# Copy only production dependencies from builder
-COPY --from=builder /app/node_modules ./node_modules
-
-# Copy app source code
-COPY --from=builder /app .
-
-# Expose port
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Start app
-CMD ["node", "app.js"]
+# Command to run the application
+CMD ["npm", "start"]
