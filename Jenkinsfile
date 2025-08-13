@@ -7,13 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/heyapurv/your-node-repo.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -25,7 +18,7 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
                         sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
                     }
                 }
@@ -46,10 +39,10 @@ pipeline {
 
     post {
         success {
-            echo "Deployment successful!"
+            echo "✅ Deployment successful!"
         }
         failure {
-            echo "Deployment failed!"
+            echo "❌ Deployment failed!"
         }
     }
 }
