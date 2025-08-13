@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "heyapurv/node-app"
-        DOCKER_CREDENTIALS_ID = "docker-cred"
     }
 
     stages {
@@ -17,10 +16,11 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) {
-                        sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-                    }
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                    '''
                 }
             }
         }
