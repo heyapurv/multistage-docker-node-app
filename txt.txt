@@ -1,0 +1,21 @@
+
+
+   77  minikube start
+   78  kubectl get nodes
+   79  vim pod.yaml
+
+   81  kubectl create -f pod.yaml
+
+   83  kubectl get pods -o wide
+
+   85  minikube ssh
+        inside the pod i run curl ipaddress
+
+   87  kubectl delete podname
+
+
+
+
+   94  kubectl logs nginx
+ 
+   96  kubectl describe pod nginx
